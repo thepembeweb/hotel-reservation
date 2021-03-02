@@ -52,13 +52,38 @@ public final class Customer {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (!(o instanceof Customer))
+            return false;
+
+        Customer otherCustomer = (Customer)o;
+
+        boolean firstNameEquals = (this.firstName == null && otherCustomer.firstName == null)
+                || (this.firstName != null && this.firstName.equals(otherCustomer.firstName));
+        boolean lastNameEquals = (this.lastName == null && otherCustomer.lastName == null)
+                || (this.lastName != null && this.lastName.equals(otherCustomer.lastName));
+        boolean emailEquals = (this.email == null && otherCustomer.email == null)
+                || (this.email != null && this.email.equals(otherCustomer.email));
+
+        return firstNameEquals && lastNameEquals && emailEquals;
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public final int hashCode() {
+        int result = 17;
+        if (firstName != null) {
+            result = 31 * result + firstName.hashCode();
+        }
+        if (lastName != null) {
+            result = 31 * result + lastName.hashCode();
+        }
+        if (email != null) {
+            result = 31 * result + email.hashCode();
+        }
+        return result;
     }
 
 }

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
-    private static final AdminResource adminResource = new AdminResource();
-    private static final HotelResource hotelResource = new HotelResource();
+    public static AdminResource adminResource = AdminResource.getInstance();
+    public static HotelResource hotelResource = HotelResource.getInstance();
     public static Scanner scanner;
 
     public static void main(String[] args) {
@@ -22,25 +22,15 @@ public class MainMenu {
             while (!exit) {
                 String selection = showMenu();
                 switch (selection) {
-                    case "1":
-                        findAndReserveRoom();
-                        break;
-                    case "2":
-                        seeMyReservations();
-                        break;
-                    case "3":
-                        createAccount();
-                        break;
-                    case "4":
+                    case "1" -> findAndReserveRoom();
+                    case "2" -> seeMyReservations();
+                    case "3" -> createAccount();
+                    case "4" -> {
                         AdminMenu.setAdminResource(adminResource);
                         AdminMenu.startAdmin();
-                        break;
-                    case "5":
-                        exit = true;
-                        break;
-                    default:
-                        showMenu();
-                        break;
+                    }
+                    case "5" -> exit = true;
+                    default -> showMenu();
                 }
             }
             System.exit(0);
@@ -88,16 +78,13 @@ public class MainMenu {
         Date checkInDate = dateFormat.parse(scanner.nextLine());
         System.out.println("Enter CheckOut Date dd/mm/yyyy example (01/02/2021)");
         Date checkOutDate = dateFormat.parse(scanner.nextLine());
-        List<IRoom> rooms =  hotelResource.findARoom(checkInDate, checkOutDate);
+        List<IRoom> availableRooms =  hotelResource.findARoom(checkInDate, checkOutDate);
 
-        if(!rooms.isEmpty()){
-            Customer customer = null;
-            System.out.println("Available rooms:");
-            System.out.println(rooms);
+        if(!availableRooms.isEmpty()){
+            Customer customer;
 
             System.out.println("Would you like to book a room? y/n");
             char optionBookARoom = scanner.next().trim().charAt(0);
-            System.out.println(optionBookARoom);
 
             if(optionBookARoom == 'y'){
                 System.out.println("Do you have an account with us? y/n");
@@ -107,7 +94,7 @@ public class MainMenu {
                     customer = getExistingAccount();
 
                     if(customer == null){
-                        System.out.println("Customer was not found");
+                        System.out.println("Customer was not found.");
                         return;
                     }
 
@@ -115,12 +102,23 @@ public class MainMenu {
                     customer = createAccount();
                 }
 
-                System.out.println("Enter room number from the available rooms:");
-                String roomNumber = scanner.next();
-                IRoom selectedRoom = hotelResource.getRoom(roomNumber);
-                hotelResource.bookARoom(customer, selectedRoom, checkInDate, checkOutDate);
-                System.out.println("Reservation was successfully created!");
-                scanner.nextLine();
+                boolean isRoomAvailable = false;
+                while (!isRoomAvailable) {
+                    System.out.println("Available rooms:");
+                    System.out.println(availableRooms);
+                    System.out.println("Please enter room number from the available rooms:");
+                    String roomNumber = scanner.next();
+                    IRoom selectedRoom = hotelResource.getRoom(roomNumber);
+
+                    if(!availableRooms.contains(selectedRoom)){
+                        System.out.println("Sorry, room number '" + roomNumber + "' is not available.");
+                    } else {
+                        hotelResource.bookARoom(customer, selectedRoom, checkInDate, checkOutDate);
+                        System.out.println("Reservation was successfully created!");
+                        scanner.nextLine();
+                        isRoomAvailable = true;
+                    }
+                }
             }
         } else {
             System.out.println("Sorry there are no rooms available.");

@@ -1,11 +1,12 @@
 import api.AdminResource;
+import api.HotelResource;
 import model.Room;
 import model.RoomType;
 import java.util.Scanner;
 
 public class AdminMenu {
+    public static AdminResource adminResource = AdminResource.getInstance();
     public static Scanner scanner;
-    private static AdminResource adminResource;
 
     public static void startAdmin() {
         scanner = new Scanner(System.in);
@@ -14,24 +15,12 @@ public class AdminMenu {
             while (!exit) {
                 String option = showAdminMenu();
                 switch (option) {
-                    case "1":
-                        System.out.println(adminResource.getAllCustomers());
-                        break;
-                    case "2":
-                        System.out.println(adminResource.getAllRooms());
-                        break;
-                    case "3":
-                        adminResource.displayAllReservations();
-                        break;
-                    case "4":
-                        addRoom();
-                        break;
-                    case "5":
-                        exit = true;
-                        break;
-                    default:
-                        showAdminMenu();
-                        break;
+                    case "1" -> System.out.println(adminResource.getAllCustomers());
+                    case "2" -> System.out.println(adminResource.getAllRooms());
+                    case "3" -> adminResource.displayAllReservations();
+                    case "4" -> addRoom();
+                    case "5" -> exit = true;
+                    default -> showAdminMenu();
                 }
             }
             String[] arguments = new String[] {""};

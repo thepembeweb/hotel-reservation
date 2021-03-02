@@ -7,8 +7,20 @@ import service.ReservationService;
 import java.util.List;
 
 public class AdminResource {
-    private static final CustomerService customerService = new CustomerService();
-    private static final ReservationService reservationService = new ReservationService();
+    private static AdminResource adminResource = null;
+
+    private AdminResource() {
+    }
+
+    public static AdminResource getInstance() {
+        if (null == adminResource) {
+            adminResource = new AdminResource();
+        }
+        return adminResource;
+    }
+
+    CustomerService customerService = CustomerService.getInstance();;
+    ReservationService reservationService = ReservationService.getInstance();
 
     public Customer getCustomer(String email) {
         return customerService.getCustomer(email);

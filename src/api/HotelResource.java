@@ -4,12 +4,26 @@ import model.IRoom;
 import model.Reservation;
 import service.CustomerService;
 import service.ReservationService;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class HotelResource {
-    private static final CustomerService customerService = new CustomerService();
-    private static final ReservationService reservationService = new ReservationService();
+    private static HotelResource hotelResource = null;
+
+    private HotelResource() {
+    }
+
+    public static HotelResource getInstance() {
+        if (null == hotelResource) {
+            hotelResource = new HotelResource();
+        }
+        return hotelResource;
+    }
+
+    CustomerService customerService = CustomerService.getInstance();
+    ReservationService reservationService = ReservationService.getInstance();
 
     public Customer getCustomer(String email) {
         return customerService.getCustomer(email);

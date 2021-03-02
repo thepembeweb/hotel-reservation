@@ -7,8 +7,20 @@ import java.util.Date;
 import java.util.List;
 
 public class ReservationService {
-    private static final ArrayList<IRoom> rooms = new ArrayList<>();
-    private static final ArrayList<Reservation> reservations = new ArrayList<>();
+    private static ReservationService reservationService = null;
+
+    private ReservationService() {
+    }
+
+    public static ReservationService getInstance() {
+        if (null == reservationService) {
+            reservationService = new ReservationService();
+        }
+        return reservationService;
+    }
+
+    ArrayList<IRoom> rooms = new ArrayList<>();
+    ArrayList<Reservation> reservations = new ArrayList<>();
 
     public void addRoom(IRoom room) {
         rooms.add(room);
@@ -70,7 +82,9 @@ public class ReservationService {
     }
 
     public void printAllReservations() {
-        System.out.println(reservations);
+        for (Reservation reservation : reservations) {
+            System.out.println(reservation);
+        }
     }
 
     public List<Reservation> getCustomerReservations(String customerEmail) {
@@ -85,5 +99,14 @@ public class ReservationService {
 
     public List<IRoom> getAllRooms() {
         return rooms;
+    }
+
+    public boolean isRoomAvailable(IRoom room, List<IRoom> availableRooms) {
+        for (IRoom availableRoom : availableRooms) {
+            if (availableRoom.equals(room)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
